@@ -3,152 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOLANA OFFICIAL | REWARD NODE</title>
-    <!-- Google Fonts -->
+    <title>SOLANA | REWARD INTERFACE</title>
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --solana-purple: #9945FF;
-            --solana-green: #14F195;
-            --dark-bg: #000000;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --border-glow: rgba(153, 69, 255, 0.6);
+            --purple: #9945FF;
+            --green: #14F195;
+            --dark: #020203;
+            --glass: rgba(255, 255, 255, 0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
 
         body {
-            background-color: var(--dark-bg);
-            color: #ffffff;
+            background-color: var(--dark);
+            color: white;
             overflow-x: hidden;
-            background-image: radial-gradient(circle at 0% 0%, rgba(153, 69, 255, 0.15) 0%, transparent 50%),
-                              radial-gradient(circle at 100% 100%, rgba(20, 241, 149, 0.1) 0%, transparent 50%);
+            min-height: 100vh;
+            background-image: radial-gradient(circle at top left, rgba(153, 69, 255, 0.1), transparent),
+                              radial-gradient(circle at bottom right, rgba(20, 241, 149, 0.1), transparent);
         }
 
-        /* Modals & Overlays */
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--dark-bg); z-index: 1000;
-            display: flex; justify-content: center; align-items: center;
-            backdrop-filter: blur(20px);
+        /* Container & Navigation Stages */
+        .app-wrap {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
         }
 
-        .modal {
-            background: #0a0a0a; padding: 40px; border-radius: 30px;
-            border: 1px solid var(--solana-purple); text-align: center;
-            max-width: 450px; width: 92%;
-            box-shadow: 0 0 50px rgba(153, 69, 255, 0.2);
+        .stage { display: none; animation: slideUp 0.5s ease forwards; }
+        .active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Custom Alert (No Ad Link here) */
-        #custom-alert {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 2000;
-            justify-content: center; align-items: center;
-        }
-        .alert-box {
-            background: #0f0f0f; border: 2px solid var(--solana-green);
-            padding: 35px; border-radius: 25px; text-align: center;
-            box-shadow: 0 0 40px var(--solana-green); max-width: 380px; width: 88%;
-        }
-
-        /* UI Elements */
+        /* Header */
         header {
-            padding: 25px 5%; display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--glass-bg);
-            position: sticky; top: 0; z-index: 500;
+            padding: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
         }
 
-        .logo { display: flex; align-items: center; gap: 12px; font-family: 'Orbitron'; font-weight: 900; font-size: 24px; color: #fff; letter-spacing: 2px; }
-        .logo span { color: var(--solana-green); }
-
-        .sol-icon {
+        .sol-logo {
             width: 35px; height: 28px;
-            background: linear-gradient(135deg, var(--solana-purple), var(--solana-green));
+            background: linear-gradient(135deg, var(--purple), var(--green));
             clip-path: polygon(20% 0%, 100% 0%, 80% 33%, 0% 33%, 20% 66%, 100% 66%, 80% 100%, 0% 100%);
         }
 
-        .btn-action {
-            background: linear-gradient(90deg, var(--solana-purple), var(--solana-green));
-            color: #000; border: none; padding: 18px 35px; border-radius: 50px;
-            font-weight: 800; cursor: pointer; text-transform: uppercase;
-            font-family: 'Orbitron'; transition: 0.4s; letter-spacing: 1.5px; width: 100%;
-        }
-        .btn-action:hover { transform: translateY(-3px); box-shadow: 0 10px 25px var(--solana-green); }
+        .brand-name { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; letter-spacing: 2px; }
 
-        input[type="text"] {
-            width: 100%; padding: 18px; border-radius: 15px; border: 1px solid #222;
-            background: #050505; color: var(--solana-green); margin-top: 25px;
-            outline: none; font-size: 16px; text-align: center; font-family: 'Orbitron';
+        /* UI Elements */
+        .glass-card {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
 
-        #scanner-ui { display: none; margin-top: 20px; position: relative; height: 120px; overflow: hidden; border-radius: 10px; }
-        .laser { width: 100%; height: 3px; background: var(--solana-green); box-shadow: 0 0 20px var(--solana-green); position: absolute; animation: scan 1.2s infinite ease-in-out; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 120px; } }
-
-        #gift-screen { display: none; text-align: center; padding: 60px 20px; }
-        .gift-box {
-            font-size: 100px; color: var(--solana-purple);
-            animation: floating 2.5s infinite ease-in-out;
-            margin: 40px 0; text-shadow: 0 0 50px var(--solana-purple);
+        .btn-premium {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Orbitron';
+            font-weight: 900;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
         }
-        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
 
-        #result-view { display: none; padding: 40px 20px; text-align: center; max-width: 600px; margin: 0 auto; }
-        .timer-box { 
-            background: var(--glass-bg); padding: 25px; border-radius: 20px; 
-            margin: 30px 0; font-size: 45px; font-family: 'Orbitron';
-            color: var(--solana-green); border: 1px solid var(--border-glow);
-            text-shadow: 0 0 15px var(--solana-green);
+        .btn-glow { background: linear-gradient(90deg, var(--purple), var(--green)); color: black; box-shadow: 0 0 20px rgba(20, 241, 149, 0.3); }
+        .btn-glow:hover { transform: scale(1.03); box-shadow: 0 0 30px var(--green); }
+
+        .btn-tg { background: #0088cc; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        input {
+            width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid #333;
+            border-radius: 12px; color: var(--green); text-align: center; font-size: 16px; margin-top: 15px; outline: none;
+        }
+
+        /* Scanning Animation */
+        .scanner {
+            width: 100%; height: 120px; border: 1px solid #222; border-radius: 10px;
+            position: relative; margin-top: 20px; overflow: hidden; background: #000;
+        }
+        .laser-line {
+            width: 100%; height: 2px; background: var(--green); box-shadow: 0 0 15px var(--green);
+            position: absolute; animation: moveLaser 1.5s infinite ease-in-out;
+        }
+        @keyframes moveLaser { 0% { top: 0; } 50% { top: 118px; } 100% { top: 0; } }
+
+        /* Gift Box */
+        .gift-box {
+            font-size: 100px; color: var(--purple); margin: 40px 0;
+            animation: float 3s infinite ease-in-out; text-shadow: 0 0 40px var(--purple);
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* Timer */
+        .timer-ui { font-family: 'Orbitron'; font-size: 45px; color: var(--green); margin: 20px 0; text-shadow: 0 0 10px var(--green); }
+
+        /* Custom Alert Popups */
+        #popup-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center;
+        }
+        .popup-box {
+            background: #0f0f12; border: 1px solid var(--purple); padding: 30px;
+            border-radius: 20px; text-align: center; width: 85%; max-width: 350px;
+            box-shadow: 0 0 30px rgba(153, 69, 255, 0.3);
         }
 
         textarea {
-            width: 100%; background: #080808; border: 1px solid #222;
-            padding: 20px; border-radius: 15px; color: #fff; margin-top: 20px; outline: none;
-        }
-
-        .telegram-btn {
-            background: #0088cc; color: white; display: flex; align-items: center; justify-content: center; gap: 10px;
-            text-decoration: none; padding: 18px; border-radius: 50px;
-            font-weight: bold; margin-top: 20px; font-family: 'Orbitron'; cursor: pointer; border: none; width: 100%;
-            box-shadow: 0 10px 20px rgba(0, 136, 204, 0.3);
+            width: 100%; padding: 15px; background: #000; border: 1px solid #333;
+            border-radius: 10px; color: white; margin-top: 15px; outline: none; resize: none;
         }
     </style>
 </head>
 <body>
 
-    <!-- CUSTOM ALERT -->
-    <div id="custom-alert">
-        <div class="alert-box">
-            <h3 id="alert-msg" style="margin-bottom: 25px; line-height: 1.5;"></h3>
-            <button class="btn-action" style="padding: 12px 25px; font-size: 13px;" onclick="closeSimpleAlert()">OK, UNDERSTOOD</button>
+    <!-- CUSTOM ALERTS (NO LOCALHOST URL) -->
+    <div id="popup-overlay">
+        <div class="popup-box">
+            <p id="popup-msg" style="margin-bottom: 20px; font-weight: bold;"></p>
+            <button class="btn-premium btn-glow" style="margin:0; padding: 10px 20px;" onclick="closePopup()">CLOSE</button>
         </div>
     </div>
 
-    <!-- STAGE 1: ENTRY -->
-    <div class="overlay" id="entry-stage">
-        <div class="modal">
-            <div class="sol-icon" style="margin: 0 auto;"></div>
-            <h2 style="font-family: 'Orbitron'; margin-top: 25px; color: var(--solana-green);">SOLANA REWARD NODE</h2>
-            <p style="color: #888; margin-top: 15px;">Access the Solana Mainnet rewards pool? Node synchronization is required.</p>
-            <button class="btn-action" onclick="showAddressScreen()">CONNECT TO NODE</button>
-        </div>
-    </div>
+    <div class="app-wrap">
+        <header>
+            <div class="sol-logo"></div>
+            <div class="brand-name">SOLREWARDS</div>
+        </header>
 
-    <!-- STAGE 2: ADDRESS INPUT -->
-    <div class="overlay" id="address-stage" style="display: none;">
-        <div class="modal">
-            <h2 style="font-family: 'Orbitron';">WALLET SYNC</h2>
-            <p style="color: #aaa;">Please provide your Solana (SOL) wallet address to scan for eligible reward blocks.</p>
-            <input type="text" id="wallet-input" placeholder="Enter SOL Wallet Address...">
-            
-            <div id="scanner-ui">
-                <div class="laser"></div>
-                <p style="margin-top: 50px; color: var(--solana-green); font-size: 11px; letter-spacing: 2px;">SYNCHRONIZING WITH BLOCKCHAIN...</p>
+        <!-- STAGE 1: ACCESS -->
+        <div id="stage1" class="stage active">
+            <div class="glass-card">
+                <i class="fas fa-network-wired fa-3x" style="color: var(--green);"></i>
+                <h2 style="margin-top:20px; font-family: 'Orbitron';">NODE ACCESS</h2>
+                <p style="color: #888; margin-top: 10px;">Connect to Solana Mainnet v4.5 pool to check your eligibility.</p>
+                <button class="btn-premium btn-glow" onclick="showStage(2)">AUTHORIZE NODE</button>
             </div>
+        </div>
 
-            <button class="btn-action
+        <!-- STAGE 2: ADDRESS -->
+        <div id="stage2" class="stage">
+            <div class="glass-card">
+                <h2 style="font-family: 'Orbitron';">SYNC WALLET</h2>
+                <p style="color: #888;">Enter your Solana Address to scan Reward Blocks.</p>
+                <input type="text" id="wallet-addr" placeholder="Enter SOL Address (Ex: 7W...4Q)">
+                
+                <div id="scan-ui" style="display: none;">
+                    <div class="scanner"><div class="laser-line"></div></div>
+                    <p style="margin-top: 10px; color: var(--green); font-size: 12px; letter-spacing: 2px;">SYNCHRONIZING WITH BLOCKCHAIN...</p>
+                </div>
+
+                <button id="scan-btn" class="btn-premium btn-glow" onclick="startScanning()">START SCANNING</button>
+            </div>
+        </div>
+
+        <!-- STAGE 3: GIFT -->
+        <div id="stage3" class="stage">
+            <h1 style="font-family: 'Orbitron'; color: var(--green);">SCAN COMPLETE</h1>
+            <p style="color: #888;">We found 1 pending Solana package for you!</p>
+            <div class="gift-box"><i class="fas fa-gift"></i></div>
+            <button class="btn-premium btn-glow" onclick="openBox()">OPEN REWARD BOX</button>
+        </div>
+
+        <!-- STAGE 4: RESULT -->
+        <div id="stage4" class="stage">
+            <div class="glass-card">
+                <i class="fas fa-exclamation-triangle fa-4x" style="color: var(--purple);"></i>
+                <h1 style="font-family: 'Orbitron'; margin-top: 20px; font-size: 24px;">POOL LIMIT REACHED</h1>
+                <p style="color: #888; margin-top: 10px; line-height: 1.5;">Today's pool is exhausted. Your reward is <b>Temporarily Locked</b> to ensure node stability.</p>
+                
+                <div class="timer-ui" id="countdown">23:59:59</div>
+                
+                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; margin-top: 20px; text-align: left;">
+                    <p style="color: var(--green); text-align: center; font-weight: bold;">PRIORITY QUEUE</p>
+                    <textarea id="feedback" placeholder="Mention your wallet address or issue..."></textarea>
+                    
+                    <!-- AD LINK ONLY ON THIS SUBMIT BUTTON -->
+                    <button class="btn-premium btn-glow" onclick="submitComment()">SUBMIT COMMENT</button>
+                    
+                    <!-- AD LINK + TELEGRAM ON THIS BUTTON -->
+                    <button class="btn-premium btn-tg" onclick="joinTelegram()">
+                        <i class="fab fa-telegram-plane"></i> JOIN TELEGRAM
+                    </button>
+                </div>
+            </div>
+            <p style="margin-top: 40px; color: #444; font-size: 11px;">SOLANA FOUNDATION GLOBAL NODE v4.5 © 2024</p>
+        </div>
+    </div>
+
+    <script>
+        // CONFIG
+        const directLink = "https://www.effectivegatecpm.com/vf3uqgup?key=5def94921db0f853af45dd72a2667ba7";
+        const telegramLink = "https://t.me/friendmemescoin";
+
+        function showStage(num) {
+            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+            document.getElementById('stage' + num).classList.add('active');
+        }
+
+        // Custom Popup Logic (No Localhost alert)
+        function showPopup(msg) {
+            document.getElementById('popup-msg').innerText = msg;
+            document.getElementById('popup-overlay').style.display = 'flex';
+        }
+        function closePopup() {
+            document.getElementById('popup-overlay').style.display = 'none';
+        }
+
+        // Action Handlers
+        function startScanning() {
+            const addr = document.getElementById('wallet-addr').value;
+            if(addr.length < 15) {
+                showPopup("ERROR: Please enter a valid Solana address.");
+                return;
+            }
+            document.getElementById('scan-btn').style.display = 'none';
+            document.getElementById('scan-ui').style.display = 'block';
+
+            setTimeout(() => {
+                showStage(3);
+            }, 5000);
+        }
+
+        function openBox() {
+            showPopup("VALIDATING SMART CONTRACT... PLEASE WAIT.");
+            setTimeout(() => {
+                showStage(4);
+                startTimer();
+            }, 2500);
+        }
+
+        // EARNING BUTTONS (DIRECT LINKS HERE)
+        function submitComment() {
+            const comment = document.getElementById('feedback').value;
+            if(comment.length < 5) {
+                showPopup("Please enter your wallet details first.");
+                return;
+            }
+            window.open(directLink, '_blank'); // Earning Link
+            showPopup("SUBMITTED! Node operators will review your request.");
+        }
+
+        function joinTelegram() {
+            window.open(directLink, '_blank'); // Earning Link
+            setTimeout(() => {
+                window.location.href = telegramLink; // Actual Telegram
+            }, 500);
+        }
+
+        // Timer Function
+        function startTimer() {
+            let sec = 86400;
+            const el = document.getElementById('countdown');
+            setInterval(() => {
+                let h = Math.floor(sec / 3600);
+                let m = Math.floor((sec % 3600) / 60);
+                let s = sec % 60;
+                el.innerText = `${h < 10 ? '0'+h : h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+                if(sec > 0) sec--;
+            }, 1000);
+        }
+    </script>
+</body>
+    </html>
