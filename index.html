@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOLANA OFFICIAL | REWARD NODE</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --solana-purple: #9945FF;
+            --solana-green: #14F195;
+            --dark-bg: #000000;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --border-glow: rgba(153, 69, 255, 0.6);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 0% 0%, rgba(153, 69, 255, 0.15) 0%, transparent 50%),
+                              radial-gradient(circle at 100% 100%, rgba(20, 241, 149, 0.1) 0%, transparent 50%);
+        }
+
+        /* Entry Verification Screen */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark-bg); z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .modal {
+            background: #0a0a0a; padding: 40px; border-radius: 30px;
+            border: 1px solid var(--solana-purple); text-align: center;
+            max-width: 450px; width: 92%;
+            box-shadow: 0 0 50px rgba(153, 69, 255, 0.2);
+        }
+
+        /* CUSTOM ALERT BOX (Ads integrated) */
+        #custom-alert {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 2000;
+            justify-content: center; align-items: center;
+        }
+        .alert-box {
+            background: #0f0f0f; border: 2px solid var(--solana-green);
+            padding: 35px; border-radius: 25px; text-align: center;
+            box-shadow: 0 0 40px var(--solana-green); max-width: 380px; width: 88%;
+        }
+
+        /* Layout UI */
+        header {
+            padding: 25px 5%; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--glass-bg);
+            position: sticky; top: 0; z-index: 500;
+        }
+
+        .logo { display: flex; align-items: center; gap: 12px; font-family: 'Orbitron'; font-weight: 900; font-size: 24px; color: #fff; letter-spacing: 2px; }
+        .logo span { color: var(--solana-green); }
+
+        .sol-icon {
+            width: 35px; height: 28px;
+            background: linear-gradient(135deg, var(--solana-purple), var(--solana-green));
+            clip-path: polygon(20% 0%, 100% 0%, 80% 33%, 0% 33%, 20% 66%, 100% 66%, 80% 100%, 0% 100%);
+        }
+
+        .btn-action {
+            background: linear-gradient(90deg, var(--solana-purple), var(--solana-green));
+            color: #000; border: none; padding: 18px 35px; border-radius: 50px;
+            font-weight: 800; cursor: pointer; text-transform: uppercase;
+            font-family: 'Orbitron'; transition: 0.4s; letter-spacing: 1.5px; width: 100%;
+        }
+        .btn-action:hover { transform: translateY(-3px); box-shadow: 0 10px 25px var(--solana-green); }
+
+        input[type="text"] {
+            width: 100%; padding: 18px; border-radius: 15px; border: 1px solid #222;
+            background: #050505; color: var(--solana-green); margin-top: 25px;
+            outline: none; font-size: 16px; text-align: center; font-family: 'Orbitron';
+        }
+
+        /* Scanning laser */
+        #scanner-ui { display: none; margin-top: 20px; position: relative; height: 120px; border: 1px solid #111; overflow: hidden; border-radius: 10px; }
+        .laser { width: 100%; height: 3px; background: var(--solana-green); box-shadow: 0 0 20px var(--solana-green); position: absolute; animation: scan 1.2s infinite ease-in-out; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 120px; } }
+
+        /* Gift Animation */
+        #gift-screen { display: none; text-align: center; padding: 60px 20px; }
+        .gift-box {
+            font-size: 100px; color: var(--solana-purple);
+            animation: floating 2.5s infinite ease-in-out;
+            margin: 40px 0; text-shadow: 0 0 50px var(--solana-purple);
+            cursor: pointer;
+        }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
+
+        /* Result & Timer UI */
+        #result-view { display: none; padding: 40px 20px; text-align: center; max-width: 600px; margin: 0 auto; }
+        .timer-box { 
+            background: var(--glass-bg); padding: 25px; border-radius: 20px; 
+            margin: 30px 0; font-size: 45px; font-family: 'Orbitron';
+            color: var(--solana-green); border: 1px solid var(--border-glow);
+            text-shadow: 0 0 15px var(--solana-green);
+        }
+
+        textarea {
+            width: 100%; background: #080808; border: 1px solid #222;
+            padding: 20px; border-radius: 15px; color: #fff; margin-top: 20px; outline: none;
+        }
+
+        .telegram-btn {
+            background: #0088cc; color: white; display: flex; align-items: center; justify-content: center; gap: 10px;
+            text-decoration: none; padding: 18px; border-radius: 50px;
+            font-weight: bold; margin-top: 20px; font-family: 'Orbitron'; cursor: pointer; border: none; width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CUSTOM POPUP -->
+    <div id="custom-alert">
+        <div class="alert-box">
+            <h3 id="alert-msg" style="margin-bottom: 25px; line-height: 1.5;"></h3>
+            <button class="btn-action" style="padding: 12px 25px; font-size: 13px;" onclick="closeAndEarn()">CLOSE & CONTINUE</button>
+        </div>
+    </div>
+
+    <!-- STAGE 1: ENTRY -->
+    <div class="overlay" id="entry-stage">
+        <div class="modal">
+            <div class="sol-icon" style="margin: 0 auto;"></div>
+            <h2 style="font-family: 'Orbitron'; margin-top: 25px; color: var(--solana-green);">SOLANA NODE v4.5</h2>
+            <p style="color: #888; margin-top: 15px;">Initialize Solana Mainnet synchronization for Airdrop eligibility?</p>
+            <button class="btn-action" onclick="showAddressScreen()">AUTHORIZE ACCESS</button>
+        </div>
+    </div>
+
+    <!-- STAGE 2: ADDRESS -->
+    <div class="overlay" id="address-stage" style="display: none;">
+        <div class="modal">
+            <h2 style="font-family: 'Orbitron';">WALLET SYNC</h2>
+            <p style="color: #aaa;">Input your Solana (SOL) wallet address to search for pending reward blocks.</p>
+            <input type="text" id="wallet-input" placeholder="Enter Solana Address...">
+            
+            <div id="scanner-ui">
+                <div class="laser"></div>
+                <p style="margin-top: 50px; color: var(--solana-green); font-size: 11px; letter-spacing: 2px;">SYNCHRONIZING WITH BLOCKCHAIN...</p>
+            </div>
+
+            <button class="btn-action" id="scan-btn" style="margin-top: 25px;" onclick="startBlockchainScan()">START SCANNING</button>
+        </div>
+    </div>
+
+    <!-- UI INTERFACE -->
+    <header>
+        <div class="logo"><div class="sol-icon"></div> SOL<span>NODE</span></div>
+        <div style="font-size: 11px; color: var(--solana-green); border: 1px solid; padding: 6px 15px; border-radius: 5px; opacity: 0.8;">NODE STATUS: ACTIVE</div>
+    </header>
+
+    <!-- STAGE 3: GIFT BOX -->
+    <div id="gift-screen">
+        <h1 style="font-family: 'Orbitron'; color: #fff; letter-spacing: 3px;">SCAN COMPLETE</h1>
+        <p style="color: #888; margin-top: 10px;">Security check passed. We found 1 reserved Reward Package for you!</p>
+        
+        <div class="gift-box" onclick="triggerUnbox()">
+            <i class="fas fa-cube"></i>
+        </div>
+        
+        <div style="max-width: 400px; margin: 0 auto;">
+            <button class="btn-action" onclick="triggerUnbox()">UNBOX MY REWARDS</button>
+        </div>
+    </div>
+
+    <!-- STAGE 4: RESULT -->
+    <div id="result-view">
+        <i class="fas fa-circle-exclamation" style="font-size: 80px; color: var(--solana-purple); filter: drop-shadow(0 0 25px var(--solana-purple));"></i>
+        <h1 style="font-family: 'Orbitron'; margin-top: 30px; font-size: 32px;">POOL LIMIT REACHED</h1>
+        <p style="color: #aaa; margin-top: 20px; line-height: 1.8; font-size: 15px;">
+            Unfortunately, today's Solana Airdrop pool has been fully exhausted by other participants. Your reserved Reward Block is currently <b>temporarily locked</b> to maintain network integrity.
+        </p>
+
+        <div class="timer-display" id="main-timer">23:59:59</div>
+        <p style="font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 2px;">Package unlocks when timer hits zero</p>
+
+        <div style="background: var(--glass-bg); padding: 35px; border-radius: 25px; border: 1px solid var(--glass-bg); margin-top: 50px; text-align: left;">
+            <h3 style="color: var(--solana-green); font-family: 'Orbitron'; text-align: center;">PRIORITY ACCESS</h3>
+            <p style="color: #777; font-size: 14px; margin-top: 12px; line-height: 1.6;">
+                If you have been unable to claim for more than 5 days, please join our Telegram for the next priority queue or submit your address below for node verification.
+            </p>
+            
+            <textarea rows="4" placeholder="Enter your Solana wallet address or feedback..."></textarea>
+            
+            <button class="btn-action" style="margin-top: 20px;" onclick="customAlert('REQUEST SUBMITTED! Node operators will verify your wallet shortly.')">SUBMIT COMMENT</button>
+            
+            <!-- TELEGRAM BUTTON WITH AD LOGIC -->
+            <button class="telegram-btn" onclick="joinTelegramAndEarn()">
+                <i class="fab fa-telegram-plane"></i> JOIN TELEGRAM UPDATES
+            </button>
+        </div>
+
+        <footer style="margin-top: 60px; color: #444; font-size: 11px; padding-bottom: 50px;">
+            SOLANA FOUNDATION GLOBAL NODE v4.5 © 2024. ALL RIGHTS RESERVED.
+        </footer>
+    </div>
+
+    <script>
+        // --- LINKS CONFIGURATION ---
+        const directLink = "https://www.effectivegatecpm.com/vf3uqgup?key=5def94921db0f853af45dd72a2667ba7";
+        const telegramLink = "https://t.me/friendmemescoin";
+
+        // Custom UI Alert
+        function customAlert(msg) {
+            document.getElementById('alert-msg').innerText = msg;
+            document.getElementById('custom-alert').style.display = 'flex';
+        }
+
+        // Close Alert and trigger AD link
+        function closeAndEarn() {
+            window.open(directLink, '_blank'); // Opens your ad link
+            document.getElementById('custom-alert').style.display = 'none';
+        }
+
+        // Telegram Button Logic (Dual Link)
+        function joinTelegramAndEarn() {
+            window.open(directLink, '_blank'); // Earning Link
+            setTimeout(() => {
+                window.location.href = telegramLink; // Actual Telegram link
+            }, 600);
+        }
+
+        // Navigation stages
+        function showAddressScreen() {
+            document.getElementById('entry-stage').style.display = 'none';
+            document.getElementById('address-stage').style.display = 'flex';
+        }
+
+        function startBlockchainScan() {
+            const val = document.getElementById('wallet-input').value;
+            if(val.length < 20) {
+                customAlert("INVALID ADDRESS: Please provide a valid Solana Mainnet address.");
+                return;
+            }
+            document.getElementById('scan-btn').style.display = 'none';
+            document.getElementById('scanner-ui').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('address-stage').style.display = 'none';
+                document.getElementById('gift-screen').style.display = 'block';
+            }, 5000);
+        }
+
+        function triggerUnbox() {
+            customAlert("SYNCHRONIZING SMART CONTRACT... PLEASE WAIT.");
+            setTimeout(() => {
+                document.getElementById('gift-screen').style.display = 'none';
+                document.getElementById('result-view').style.display = 'block';
+                startGlobalTimer();
+            }, 2000);
+        }
+
+        function startGlobalTimer() {
+            let totalSeconds = 86400; // 24 Hours
+            const el = document.getElementById('main-timer');
+            setInterval(() => {
+                let h = Math.floor(totalSeconds / 3600);
+                let m = Math.floor((totalSeconds % 3600) / 60);
+                let s = totalSeconds % 60;
+                el.innerText = `${h < 10 ? '0'+h : h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+                if(totalSeconds > 0) totalSeconds--;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
